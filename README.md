@@ -1,2 +1,2 @@
 # go-ma
-rage (EMThe Simple Moving Average (SMA), Exponential Moving AveA), and Weighted Moving Average (WMA) algorithms implemented in Golang. 
+The Simple Moving Average (SMA), Exponential Moving (EMA), and Weighted Moving Average (WMA) algorithms implemented in Golang.  
