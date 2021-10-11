@@ -1,7 +1,7 @@
 package ma
 
 // TODO
-type SMA struct {
+type SMAFloat struct {
 	cache    []float64
 	cacheLen uint
 	index    uint
@@ -9,9 +9,9 @@ type SMA struct {
 }
 
 // TODO
-func NewSMAFloat(initial []float64) (sma *SMA, result float64) {
+func NewSMAFloat(initial []float64) (sma *SMAFloat, result float64) {
 
-	sma = &SMA{
+	sma = &SMAFloat{
 		cacheLen: uint(len(initial)),
 	}
 	sma.cache = make([]float64, sma.cacheLen)
@@ -29,7 +29,7 @@ func NewSMAFloat(initial []float64) (sma *SMA, result float64) {
 }
 
 // TODO
-func (sma *SMA) Calculate(next float64) (result float64) {
+func (sma *SMAFloat) Calculate(next float64) (result float64) {
 
 	sma.cache[sma.index] = next
 	sma.index++

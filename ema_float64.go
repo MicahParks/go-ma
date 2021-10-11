@@ -7,16 +7,16 @@ const (
 )
 
 // TODO
-type EMA struct {
+type EMAFloat struct {
 	prev             float64
 	constant         float64
 	oneMinusConstant float64
 }
 
 // TODO Verify
-func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMA) {
+func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
 
-	ema = &EMA{
+	ema = &EMAFloat{
 		constant: smoothing / (1 + float64(periods)),
 		prev:     sma,
 	}
@@ -26,7 +26,7 @@ func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMA) {
 }
 
 // TODO
-func (e *EMA) Calculate(next float64) (result float64) {
+func (e *EMAFloat) Calculate(next float64) (result float64) {
 
 	e.prev = next*e.constant + e.prev*e.oneMinusConstant
 
