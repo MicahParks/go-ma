@@ -16,6 +16,10 @@ type EMAFloat struct {
 // TODO Verify
 func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
 
+	if smoothing == 0 {
+		smoothing = DefaultSmoothing
+	}
+
 	ema = &EMAFloat{
 		constant: smoothing / (1 + float64(periods)),
 		prev:     sma,
