@@ -1,5 +1,11 @@
 package ma
 
+const (
+	DefaultLongMACDPeriod   = 26
+	DefaultShortMACDPeriod  = 12
+	DefaultSignalMACDPeriod = 9
+)
+
 // TODO
 type MACDFloat struct {
 	Long  *EMAFloat // Typical 26 periods.
@@ -7,7 +13,7 @@ type MACDFloat struct {
 }
 
 // TODO
-func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
+func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) { // TODO Accept initial values for initial result.
 	return MACDFloat{
 		Long:  long,
 		Short: short,

@@ -3,7 +3,7 @@ package ma
 const (
 
 	// TODO
-	DefaultSmoothing = 2
+	DefaultEMASmoothing = 2
 )
 
 // TODO
@@ -16,7 +16,7 @@ type EMAFloat struct {
 // TODO Verify
 func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
 	if smoothing == 0 {
-		smoothing = DefaultSmoothing
+		smoothing = DefaultEMASmoothing
 	}
 
 	ema = &EMAFloat{

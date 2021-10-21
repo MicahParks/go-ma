@@ -16,7 +16,7 @@ type EMABig struct {
 
 func NewEMABig(periods uint, sma, smoothing *big.Float) (ema *EMABig) {
 	if smoothing == nil || smoothing.Cmp(big.NewFloat(0)) == 0 {
-		smoothing = big.NewFloat(DefaultSmoothing)
+		smoothing = big.NewFloat(DefaultEMASmoothing)
 	}
 
 	ema = &EMABig{

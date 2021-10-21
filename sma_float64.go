@@ -29,7 +29,7 @@ func NewSMAFloat(initial []float64) (sma *SMAFloat, result float64) {
 }
 
 // TODO
-func (sma *SMAFloat) Calculate(next float64) (result float64) {
+func (sma *SMAFloat) Calculate(next float64) (result float64) { // TODO Add tests for this method.
 	sma.cache[sma.index] = next
 	sma.index++
 	if sma.index == sma.cacheLen {
