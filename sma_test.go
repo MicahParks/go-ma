@@ -7,26 +7,39 @@ import (
 )
 
 const (
-	smaPeriod = 10
+	testPeriod = 10
 )
 
-func TestSMABig_Calculate(t *testing.T) {
-	sma, _ := ma.NewSMABig(bigPrices[:smaPeriod])
+func BenchmarkSMABig_Calculate(b *testing.B) {
+	sma, _ := ma.NewSMABig(bigPrices[:testPeriod])
 
-	var result float64
-	for i, p := range bigPrices[smaPeriod:] {
-		result, _ = sma.Calculate(p).Float64()
+	for _, p := range bigPrices[testPeriod:] {
+		sma.Calculate(p)
+	}
+}
 
-		if smaResults[i] != result {
-			t.FailNow()
+func BenchmarkSMAFloat_Calculate(b *testing.B) {
+	sma, _ := ma.NewSMAFloat(prices[:testPeriod])
+
+	for i, p := range prices[testPeriod:] {
+		if smaResults[i] != sma.Calculate(p) {
+			b.FailNow()
 		}
 	}
 }
 
-func TestSMAFloat_Calculate(t *testing.T) {
-	sma, _ := ma.NewSMAFloat(prices[:smaPeriod])
+func TestSMABig_Calculate(t *testing.T) {
+	sma, _ := ma.NewSMABig(bigPrices[:testPeriod])
 
-	for i, p := range prices[smaPeriod:] {
+	for _, p := range bigPrices[testPeriod:] {
+		sma.Calculate(p)
+	}
+}
+
+func TestSMAFloat_Calculate(t *testing.T) {
+	sma, _ := ma.NewSMAFloat(prices[:testPeriod])
+
+	for i, p := range prices[testPeriod:] {
 		if smaResults[i] != sma.Calculate(p) {
 			t.FailNow()
 		}
