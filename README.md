@@ -8,3 +8,20 @@ Example: Weighted Moving Average (WMA)
 
 # Usage
 
+# Testing
+There is 100% test coverage and benchmarks for this project. Here is an example benchmark result:
+```
+$ go test -bench .
+goos: linux
+goarch: amd64
+pkg: github.com/MicahParks/go-ma
+cpu: Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz
+BenchmarkEMABig_Calculate-6             1000000000               0.0000199 ns/op
+BenchmarkEMAFloat_Calculate-6           1000000000               0.0000007 ns/op
+BenchmarkMACDBig_Calculate-6            1000000000               0.0000379 ns/op
+BenchmarkMACDFloat_Calculate-6          1000000000               0.0000016 ns/op
+BenchmarkSMABig_Calculate-6             1000000000               0.0000522 ns/op
+BenchmarkSMAFloat_Calculate-6           1000000000               0.0000013 ns/op
+PASS
+ok      github.com/MicahParks/go-ma     0.010s
+```
