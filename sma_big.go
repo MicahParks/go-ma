@@ -15,14 +15,13 @@ type SMABig struct {
 // NewSMABig creates a new SMA data structure and the initial result. The period used will be the length of the initial
 // input slice.
 func NewSMABig(initial []*big.Float) (sma *SMABig, result *big.Float) {
-	result = new(big.Float)
-
 	sma = &SMABig{
 		cacheLen: uint(len(initial)),
 	}
 	sma.cache = make([]*big.Float, sma.cacheLen)
 	sma.periods = big.NewFloat(float64(sma.cacheLen))
 
+	result = big.NewFloat(0)
 	for i, p := range initial {
 		if i != 0 {
 			sma.cache[i] = p
