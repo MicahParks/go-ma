@@ -38,6 +38,7 @@ func (sma *SMABig) Calculate(next *big.Float) (result *big.Float) {
 		sma.index = 0
 	}
 
+	result = big.NewFloat(0)
 	for _, p := range sma.cache {
 		result = result.Add(result, p)
 	}
