@@ -8,12 +8,14 @@ var (
 	bigOne = big.NewFloat(1)
 )
 
+// EMABig represents the state of an Exponential Moving Average (EMA) algorithm.
 type EMABig struct {
 	constant         *big.Float
 	prev             *big.Float
 	oneMinusConstant *big.Float
 }
 
+// NewEMABig creates a new EMA data structure.
 func NewEMABig(periods uint, sma, smoothing *big.Float) (ema *EMABig) {
 	if smoothing == nil || smoothing.Cmp(big.NewFloat(0)) == 0 {
 		smoothing = big.NewFloat(DefaultEMASmoothing)
@@ -28,6 +30,7 @@ func NewEMABig(periods uint, sma, smoothing *big.Float) (ema *EMABig) {
 	return ema
 }
 
+// Calculate producers the next EMA result given the next input.
 func (ema *EMABig) Calculate(next *big.Float) (result *big.Float) {
 	ema.prev = new(big.Float).Add(new(big.Float).Mul(next, ema.constant), new(big.Float).Mul(ema.prev, ema.oneMinusConstant))
 

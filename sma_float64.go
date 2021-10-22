@@ -1,6 +1,6 @@
 package ma
 
-// TODO
+// SMAFloat represents the state of a Simple Moving Average (SMA) algorithm.
 type SMAFloat struct {
 	cache    []float64
 	cacheLen uint
@@ -8,7 +8,8 @@ type SMAFloat struct {
 	periods  float64
 }
 
-// TODO
+// NewSMAFloat creates a new SMA data structure and the initial result. The period used will be the length of the
+// initial input slice.
 func NewSMAFloat(initial []float64) (sma *SMAFloat, result float64) {
 
 	sma = &SMAFloat{
@@ -28,8 +29,8 @@ func NewSMAFloat(initial []float64) (sma *SMAFloat, result float64) {
 	return sma, result
 }
 
-// TODO
-func (sma *SMAFloat) Calculate(next float64) (result float64) { // TODO Add tests for this method.
+// Calculate produces the next SMA result given the next input.
+func (sma *SMAFloat) Calculate(next float64) (result float64) {
 	sma.cache[sma.index] = next
 	sma.index++
 	if sma.index == sma.cacheLen {

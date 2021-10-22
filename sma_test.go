@@ -6,7 +6,10 @@ import (
 	"github.com/MicahParks/go-ma"
 )
 
-// TODO
+const (
+	smaPeriod = 10
+)
+
 func TestSMABig_Calculate(t *testing.T) {
 	sma, _ := ma.NewSMABig(bigPrices[:smaPeriod])
 
@@ -20,7 +23,6 @@ func TestSMABig_Calculate(t *testing.T) {
 	}
 }
 
-// TODO
 func TestSMAFloat_Calculate(t *testing.T) {
 	sma, _ := ma.NewSMAFloat(prices[:smaPeriod])
 
@@ -30,10 +32,6 @@ func TestSMAFloat_Calculate(t *testing.T) {
 		}
 	}
 }
-
-const (
-	smaPeriod = 10
-)
 
 var (
 	smaResults = []float64{

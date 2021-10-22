@@ -2,18 +2,18 @@ package ma
 
 const (
 
-	// TODO
+	// DefaultEMASmoothing is a common smoothing constant for the EMA algorithm.
 	DefaultEMASmoothing = 2
 )
 
-// TODO
+// EMAFloat represents the state of an Exponential Moving Average.
 type EMAFloat struct {
 	constant         float64
 	prev             float64
 	oneMinusConstant float64
 }
 
-// TODO Verify
+// NewEMAFloat creates a new EMA data structure (EMA) algorithm.
 func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
 	if smoothing == 0 {
 		smoothing = DefaultEMASmoothing
@@ -28,7 +28,7 @@ func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
 	return ema
 }
 
-// TODO
+// Calculate producers the next EMA result given the next input.
 func (ema *EMAFloat) Calculate(next float64) (result float64) {
 	ema.prev = next*ema.constant + ema.prev*ema.oneMinusConstant
 

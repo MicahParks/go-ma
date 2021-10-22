@@ -28,7 +28,6 @@ func TestMACDBig_Calculate(t *testing.T) {
 	}
 }
 
-// TODO
 func TestMACDFloat_Calculate(t *testing.T) {
 	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
 	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)

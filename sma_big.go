@@ -4,6 +4,7 @@ import (
 	"math/big"
 )
 
+// SMABig represents the state of a Simple Moving Average (SMA) algorithm.
 type SMABig struct {
 	cache    []*big.Float
 	cacheLen uint
@@ -11,6 +12,8 @@ type SMABig struct {
 	periods  *big.Float
 }
 
+// NewSMABig creates a new SMA data structure and the initial result. The period used will be the length of the initial
+// input slice.
 func NewSMABig(initial []*big.Float) (sma *SMABig, result *big.Float) {
 	result = new(big.Float)
 
@@ -31,6 +34,7 @@ func NewSMABig(initial []*big.Float) (sma *SMABig, result *big.Float) {
 	return sma, result
 }
 
+// Calculate produces the next SMA result given the next input.
 func (sma *SMABig) Calculate(next *big.Float) (result *big.Float) {
 	sma.cache[sma.index] = next
 	sma.index++
