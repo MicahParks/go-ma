@@ -54,8 +54,10 @@ func TestMACDBig_Calculate(t *testing.T) {
 	macd := ma.NewMACDBig(longEMA, shortEMA)
 
 	var res float64
+	var bigRes *big.Float
 	for i, p := range bigPrices[ma.DefaultLongMACDPeriod:] {
-		res, _ = macd.Calculate(p).Float64()
+		bigRes, _, _ = macd.Calculate(p)
+		res, _ = bigRes.Float64()
 		if res != results[i] {
 			t.FailNow()
 		}
@@ -74,8 +76,10 @@ func TestMACDFloat_Calculate(t *testing.T) {
 
 	macd := ma.NewMACDFloat(longEMA, shortEMA)
 
+	var res float64
 	for i, p := range prices[ma.DefaultLongMACDPeriod:] {
-		if macd.Calculate(p) != results[i] {
+		res, _, _ = macd.Calculate(p)
+		if res != results[i] {
 			t.FailNow()
 		}
 	}

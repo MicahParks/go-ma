@@ -21,6 +21,8 @@ func NewMACDBig(long, short *EMABig) (macd MACDBig) {
 }
 
 // Calculate produces the next MACD result given the next input.
-func (macd MACDBig) Calculate(next *big.Float) (result *big.Float) {
-	return new(big.Float).Sub(macd.Short.Calculate(next), macd.Long.Calculate(next))
+func (macd MACDBig) Calculate(next *big.Float) (result, short, long *big.Float) {
+	short = macd.Short.Calculate(next)
+	long = macd.Long.Calculate(next)
+	return new(big.Float).Sub(short, long), short, long
 }

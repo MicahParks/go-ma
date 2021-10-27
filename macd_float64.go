@@ -29,8 +29,12 @@ func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
 }
 
 // Calculate produces the next MACD result given the next input.
-func (macd MACDFloat) Calculate(next float64) (result float64) {
-	return macd.Short.Calculate(next) - macd.Long.Calculate(next)
+//
+// TODO Return the result from short and long?
+func (macd MACDFloat) Calculate(next float64) (result, short, long float64) {
+	short = macd.Short.Calculate(next)
+	long = macd.Long.Calculate(next)
+	return short - long, short, long
 }
 
 // TODO Make the "signal line" from the result of the MACD. Typically nine periods.
