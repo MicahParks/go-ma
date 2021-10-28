@@ -8,34 +8,47 @@ import (
 type MACDSignalBig struct {
 	MACD      MACDBig
 	SignalEMA *EMABig
-	buy       bool
+	prevBuy   bool
 }
 
-func NewMACDFloatSignal(macd MACDBig, signalEMA *EMABig, next *big.Float) (macdFloatSignal *MACDSignalBig, macdResult, signalResult *big.Float) {
+type MACDSignalResultsBig struct {
+	BuySignal *bool
+	MACD      MACDResultsBig
+	Signal    *big.Float
+}
+
+func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (macdFloatSignal *MACDSignalBig, results MACDSignalResultsBig) {
 	macdFloatSignal = &MACDSignalBig{
 		MACD:      macd,
 		SignalEMA: signalEMA,
 	}
 
-	macdResult, _, _ = macd.Calculate(next)
-	signalResult = signalEMA.Calculate(next)
+	results = MACDSignalResultsBig{
+		MACD:   macd.Calculate(next),
+		Signal: signalEMA.Calculate(next),
+	}
 
-	macdFloatSignal.buy = macdResult.Cmp(signalResult) == 1
+	macdFloatSignal.prevBuy = results.MACD.Result.Cmp(results.Signal) == 1
 
-	return macdFloatSignal, macdResult, signalResult
+	return macdFloatSignal, results
 }
 
 // Calculate TODO
-func (m *MACDSignalBig) Calculate(next *big.Float) (buySignal *bool, macdResult, signalResult *big.Float) {
-	macdResult, _, _ = m.MACD.Calculate(next)
-	signalResult = m.SignalEMA.Calculate(next)
-
-	buy := macdResult.Cmp(signalResult) == 1
-
-	if buy != m.buy {
-		m.buy = buy
-		buySignal = &buy
+func (m *MACDSignalBig) Calculate(next *big.Float) (results MACDSignalResultsBig) {
+	results = MACDSignalResultsBig{
+		MACD:   m.MACD.Calculate(next),
+		Signal: m.SignalEMA.Calculate(next),
 	}
 
-	return buySignal, macdResult, signalResult
+	targetCmp := 1
+	if m.prevBuy {
+		targetCmp = -1
+	}
+	if results.MACD.Result.Cmp(results.Signal) == targetCmp {
+		buy := !m.prevBuy
+		m.prevBuy = buy
+		results.BuySignal = &buy
+	}
+
+	return results
 }
