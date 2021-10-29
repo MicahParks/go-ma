@@ -14,10 +14,7 @@ type MACDSignalResultsFloat struct {
 }
 
 // TODO Make the input a data structure.
-func NewMACDSignalFloat(macd MACDFloat, signalEMAPeriod uint, signalEMASmoothing float64, next []float64) (macdSignalFloat *MACDSignalFloat) {
-	_, sma := NewSMAFloat(next)
-	signalEMA := NewEMAFloat(signalEMAPeriod, sma, signalEMASmoothing)
-
+func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (macdSignalFloat *MACDSignalFloat, results MACDSignalResultsFloat) {
 	macdSignalFloat = &MACDSignalFloat{
 		macd:      macd,
 		signalEMA: signalEMA,
