@@ -32,9 +32,12 @@ func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (macd
 
 // Calculate TODO
 func (m *MACDSignalFloat) Calculate(next float64) (results MACDSignalResultsFloat) {
+	macd := m.macd.Calculate(next)
+	signalEMA := m.signalEMA.Calculate(macd.Result)
+
 	results = MACDSignalResultsFloat{
-		MACD:      m.macd.Calculate(next),
-		SignalEMA: m.signalEMA.Calculate(next),
+		MACD:      macd,
+		SignalEMA: signalEMA,
 	}
 
 	if results.MACD.Result > results.SignalEMA != m.prevBuy {
