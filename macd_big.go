@@ -17,8 +17,6 @@ type MACDResultsBig struct {
 }
 
 // NewMACDBig creates a new MACD data structure and returns the initial result.
-//
-// TODO Return the initial result.
 func NewMACDBig(long, short *EMABig) (macd MACDBig) {
 	return MACDBig{
 		Long:  long,

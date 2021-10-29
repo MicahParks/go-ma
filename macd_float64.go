@@ -25,8 +25,6 @@ type MACDResultsFloat struct {
 }
 
 // NewMACDFloat creates a new MACD data structure and returns the initial result.
-//
-// TODO Return the initial result.
 func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
 	return MACDFloat{
 		Long:  long,
@@ -35,8 +33,6 @@ func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
 }
 
 // Calculate produces the next MACD result given the next input.
-//
-// TODO Return the result from short and long?
 func (macd MACDFloat) Calculate(next float64) (results MACDResultsFloat) {
 	short := macd.Short.Calculate(next)
 	long := macd.Long.Calculate(next)
@@ -46,5 +42,3 @@ func (macd MACDFloat) Calculate(next float64) (results MACDResultsFloat) {
 		Short:  short,
 	}
 }
-
-// TODO Make the "signal line" from the result of the MACD. Typically nine periods.
