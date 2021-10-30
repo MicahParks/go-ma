@@ -24,33 +24,36 @@ func main() {
 	// Create the short EMA data structure.
 	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
 
-	// Catch up the short EMA to the period where the long EMA will be at.
+	// Save the last value of the short EMA for the first MACD calculation.
+	var mostRecentShortEMA float64
+
+	// Catch up the short EMA to the period where the long EMA plus the signal EMA will be at.
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
-		shortEMA.Calculate(p)
+		mostRecentShortEMA = shortEMA.Calculate(p)
 	}
 
 	// Create the long EMA.
 	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
 	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
 
+	// The first result returned from calculating the MACD will be the second possible MACD result. To get the first
+	// possible MACD result, use the most recent short and long EMA values. For the long EMA value, this will be
+	// equivalent to the most recent long SMA value.
+	firstMACDResult := mostRecentShortEMA - longSMA
+
 	// Create the MACD from the short and long EMAs.
 	macd := ma.NewMACDFloat(longEMA, shortEMA)
 
 	// Create the signal EMA.
-	_, signalSMA := ma.NewSMAFloat(prices[:ma.DefaultSignalEMAPeriod])
-	signalEMA := ma.NewEMAFloat(ma.DefaultSignalEMAPeriod, signalSMA, 0)
-
-	// Catch up the signal EMA to the period where the logn EMA will be at.
-	for _, p := range prices[ma.DefaultSignalEMAPeriod:ma.DefaultLongMACDPeriod] {
-		signalEMA.Calculate(p)
-	}
+	signalEMA, signalResult, macdResults := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1], 0)
+	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1, nil, macdResults[len(macdResults)-1].Result, signalResult)
 
 	// Create the signal from the MACD and signal EMA.
-	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+1])
-	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+1, results.BuySignal, results.MACD.Result, results.SignalEMA)
+	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1]) // TODO Wrong index, probably.
+	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1, results.BuySignal, results.MACD.Result, results.SignalEMA)
 
 	// Use the remaining data to generate the signal results for each period.
-	for i := ma.DefaultLongMACDPeriod + 1; i < len(prices); i++ {
+	for i := ma.DefaultLongMACDPeriod + ma.DefaultSignalEMAPeriod; i < len(prices); i++ {
 		results = signal.Calculate(prices[i])
 		if results.BuySignal != nil {
 			println("boi")

@@ -20,9 +20,10 @@ func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (macd
 		signalEMA: signalEMA,
 	}
 
+	macdResult := macd.Calculate(next)
 	results = MACDSignalResultsFloat{
-		MACD:      macd.Calculate(next),
-		SignalEMA: signalEMA.Calculate(next),
+		MACD:      macdResult,
+		SignalEMA: signalEMA.Calculate(macdResult.Result),
 	}
 
 	macdSignalFloat.prevBuy = results.MACD.Result > results.SignalEMA
