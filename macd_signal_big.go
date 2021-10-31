@@ -4,19 +4,25 @@ import (
 	"math/big"
 )
 
-// TODO
+// MACDSignalBig represents an MACD and signal EMA pair.
 type MACDSignalBig struct {
 	macd      MACDBig
 	signalEMA *EMABig
 	prevBuy   bool
 }
 
+// MACDSignalResultsBig holds the results of an MACD and signal EMA pair's calculation.
+//
+// If the calculation triggered a buy signal BuySignal will not be `nil`. It will be a pointer to `true`, if the signal
+// indicates a buy and a pointer to `false` if the signal indicates a sell.
 type MACDSignalResultsBig struct {
 	BuySignal *bool
 	MACD      MACDResultsBig
 	SignalEMA *big.Float
 }
 
+// NewMACDSignalBig creates a new MACD and signal EMA pair. It's calculations are done in tandem to produced buy/sell
+// signals.
 func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (*MACDSignalBig, MACDSignalResultsBig) {
 	macdFloatSignal := &MACDSignalBig{
 		macd:      macd,
@@ -34,7 +40,7 @@ func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (*MACDSi
 	return macdFloatSignal, results
 }
 
-// Calculate TODO
+// Calculate computes the next MACD and signal EMA pair's results. It may also trigger a buy/sell signal.
 func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
 	macd := m.macd.Calculate(next)
 	signalEMA := m.signalEMA.Calculate(macd.Result)
@@ -57,6 +63,16 @@ func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
 	return results
 }
 
+// DefaultMACDSignalBig is a helper function to create an MACD and signal EMA pair from the default parameters given the
+// initial input data points.
+//
+// There must be at least 35 data points in the initial slice. This accounts for the number of data points required to
+// make the MACD (26) and the number of data points to make the signal EMA from the MACD (9).
+//
+// If the initial input slice does not have enough data points, the function will return `nil`.
+//
+// If the initial input slice does has too many data points, the MACD and signal EMA pair will be "caught" up to the
+// last data point given, but no results will be accessible.
 func DefaultMACDSignalBig(initial []*big.Float) *MACDSignalBig {
 	if RequiredSamplesForDefaultMACDSignal > len(initial) {
 		return nil

@@ -14,10 +14,11 @@ const (
 
 // MACDFloat represents the state of a Moving Average Convergence Divergence (MACD) algorithm.
 type MACDFloat struct {
-	Long  *EMAFloat // Typical 26 periods.
-	Short *EMAFloat // Typical 12 periods.
+	Long  *EMAFloat
+	Short *EMAFloat
 }
 
+// MACDResultsFloat holds the results fo an MACD calculation.
 type MACDResultsFloat struct {
 	Long   float64
 	Result float64
@@ -43,7 +44,10 @@ func (macd MACDFloat) Calculate(next float64) MACDResultsFloat {
 	}
 }
 
-// SignalEMA TODO
+// SignalEMA creates a signal EMA for the current MACD.
+//
+// The first MACD result *must* be saved in order to create the signal EMA. Then, the next period samples required for
+// the creation of the signal EMA must be given. The period length of the EMA is `1 + len(next)`.
 func (macd MACDFloat) SignalEMA(firstMACDResult float64, next []float64, smoothing float64) (signalEMA *EMAFloat, signalResult float64, macdResults []MACDResultsFloat) {
 	macdFloats := make([]float64, len(next))
 	macdResults = make([]MACDResultsFloat, len(next))

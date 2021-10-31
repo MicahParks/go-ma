@@ -4,23 +4,28 @@ const (
 
 	// RequiredSamplesForDefaultMACDSignal is the required number of period samples for an MACD signal using the default
 	// arguments.
-	RequiredSamplesForDefaultMACDSignal = DefaultShortMACDPeriod + DefaultLongMACDPeriod + DefaultSignalEMAPeriod
+	RequiredSamplesForDefaultMACDSignal = DefaultLongMACDPeriod + DefaultSignalEMAPeriod
 )
 
-// TODO
+// MACDSignalFloat represents an MACD and signal EMA pair.
 type MACDSignalFloat struct {
 	macd      MACDFloat
 	signalEMA *EMAFloat
 	prevBuy   bool
 }
 
+// MACDSignalResultsFloat holds the results of an MACD and signal EMA pair's calculation.
+//
+// If the calculation triggered a buy signal BuySignal will not be `nil`. It will be a pointer to `true`, if the signal
+// indicates a buy and a pointer to `false` if the signal indicates a sell.
 type MACDSignalResultsFloat struct {
 	BuySignal *bool
 	MACD      MACDResultsFloat
 	SignalEMA float64
 }
 
-// TODO Make the input a data structure.
+// NewMACDSignalFloat creates a new MACD and signal EMA pair. It's calculations are done in tandem to produced buy/sell
+// signals.
 func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (*MACDSignalFloat, MACDSignalResultsFloat) {
 	macdSignalFloat := &MACDSignalFloat{
 		macd:      macd,
@@ -38,7 +43,7 @@ func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (*MAC
 	return macdSignalFloat, results
 }
 
-// Calculate TODO
+// Calculate computes the next MACD and signal EMA pair's results. It may also trigger a buy/sell signal.
 func (m *MACDSignalFloat) Calculate(next float64) MACDSignalResultsFloat {
 	macd := m.macd.Calculate(next)
 	signalEMA := m.signalEMA.Calculate(macd.Result)
@@ -57,6 +62,16 @@ func (m *MACDSignalFloat) Calculate(next float64) MACDSignalResultsFloat {
 	return results
 }
 
+// DefaultMACDSignalFloat is a helper function to create an MACD and signal EMA pair from the default parameters given the
+// initial input data points.
+//
+// There must be at least 35 data points in the initial slice. This accounts for the number of data points required to
+// make the MACD (26) and the number of data points to make the signal EMA from the MACD (9).
+//
+// If the initial input slice does not have enough data points, the function will return `nil`.
+//
+// If the initial input slice does has too many data points, the MACD and signal EMA pair will be "caught" up to the
+// last data point given, but no results will be accessible.
 func DefaultMACDSignalFloat(initial []float64) *MACDSignalFloat {
 	if RequiredSamplesForDefaultMACDSignal > len(initial) {
 		return nil

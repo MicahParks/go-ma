@@ -6,10 +6,11 @@ import (
 
 // MACDBig represents the state of a Moving Average Convergence Divergence (MACD) algorithm.
 type MACDBig struct {
-	Long  *EMABig // Typical 26 periods.
-	Short *EMABig // Typical 12 periods.
+	Long  *EMABig
+	Short *EMABig
 }
 
+// MACDResultsBig holds the results fo an MACD calculation.
 type MACDResultsBig struct {
 	Long   *big.Float
 	Result *big.Float
@@ -35,7 +36,10 @@ func (macd MACDBig) Calculate(next *big.Float) MACDResultsBig {
 	}
 }
 
-// SignalEMA TODO
+// SignalEMA creates a signal EMA for the current MACD.
+//
+// The first MACD result *must* be saved in order to create the signal EMA. Then, the next period samples required for
+// the creation of the signal EMA must be given. The period length of the EMA is `1 + len(next)`.
 func (macd MACDBig) SignalEMA(firstMACDResult *big.Float, next []*big.Float, smoothing *big.Float) (signalEMA *EMABig, signalResult *big.Float, macdResults []MACDResultsBig) {
 	macdBigs := make([]*big.Float, len(next))
 	macdResults = make([]MACDResultsBig, len(next))
