@@ -34,3 +34,19 @@ func (macd MACDBig) Calculate(next *big.Float) MACDResultsBig {
 		Short:  short,
 	}
 }
+
+// SignalEMA TODO
+func (macd MACDBig) SignalEMA(firstMACDResult *big.Float, next []*big.Float, smoothing *big.Float) (signalEMA *EMABig, signalResult *big.Float, macdResults []MACDResultsBig) {
+	macdBigs := make([]*big.Float, len(next))
+	macdResults = make([]MACDResultsBig, len(next))
+
+	for i, p := range next {
+		result := macd.Calculate(p)
+		macdBigs[i] = result.Result
+		macdResults[i] = result
+	}
+
+	_, sma := NewSMABig(append([]*big.Float{firstMACDResult}, macdBigs...))
+
+	return NewEMABig(uint(len(next)+1), sma, smoothing), sma, macdResults
+}

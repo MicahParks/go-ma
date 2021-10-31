@@ -46,19 +46,15 @@ func (macd MACDFloat) Calculate(next float64) MACDResultsFloat {
 // SignalEMA TODO
 func (macd MACDFloat) SignalEMA(firstMACDResult float64, next []float64, smoothing float64) (signalEMA *EMAFloat, signalResult float64, macdResults []MACDResultsFloat) {
 	macdFloats := make([]float64, len(next))
+	macdResults = make([]MACDResultsFloat, len(next))
 
 	for i, p := range next {
 		result := macd.Calculate(p)
 		macdFloats[i] = result.Result
-		macdResults = append(macdResults, result)
+		macdResults[i] = result
 	}
 
 	_, sma := NewSMAFloat(append([]float64{firstMACDResult}, macdFloats...))
-
-	// TODO Remove other redundant default checks.
-	// if smoothing == 0 {
-	// 	smoothing = DefaultEMASmoothing
-	// }
 
 	return NewEMAFloat(uint(len(next)+1), sma, smoothing), sma, macdResults
 }

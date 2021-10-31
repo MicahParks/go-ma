@@ -6,49 +6,84 @@ import (
 
 // TODO
 type MACDSignalBig struct {
-	MACD      MACDBig
-	SignalEMA *EMABig
+	macd      MACDBig
+	signalEMA *EMABig
 	prevBuy   bool
 }
 
 type MACDSignalResultsBig struct {
 	BuySignal *bool
 	MACD      MACDResultsBig
-	Signal    *big.Float
+	SignalEMA *big.Float
 }
 
 func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (*MACDSignalBig, MACDSignalResultsBig) {
 	macdFloatSignal := &MACDSignalBig{
-		MACD:      macd,
-		SignalEMA: signalEMA,
+		macd:      macd,
+		signalEMA: signalEMA,
 	}
 
+	macdResult := macd.Calculate(next)
 	results := MACDSignalResultsBig{
-		MACD:   macd.Calculate(next),
-		Signal: signalEMA.Calculate(next),
+		MACD:      macdResult,
+		SignalEMA: signalEMA.Calculate(macdResult.Result),
 	}
 
-	macdFloatSignal.prevBuy = results.MACD.Result.Cmp(results.Signal) == 1
+	macdFloatSignal.prevBuy = results.MACD.Result.Cmp(results.SignalEMA) == 1
 
 	return macdFloatSignal, results
 }
 
 // Calculate TODO
 func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
+	macd := m.macd.Calculate(next)
+	signalEMA := m.signalEMA.Calculate(macd.Result)
+
 	results := MACDSignalResultsBig{
-		MACD:   m.MACD.Calculate(next),
-		Signal: m.SignalEMA.Calculate(next),
+		MACD:      macd,
+		SignalEMA: signalEMA,
 	}
 
 	targetCmp := 1
 	if m.prevBuy {
 		targetCmp = -1
 	}
-	if results.MACD.Result.Cmp(results.Signal) == targetCmp {
+	if results.MACD.Result.Cmp(results.SignalEMA) == targetCmp {
 		buy := !m.prevBuy
 		m.prevBuy = buy
 		results.BuySignal = &buy
 	}
 
 	return results
+}
+
+func DefaultMACDSignalBig(initial []*big.Float) *MACDSignalBig {
+	if DefaultShortMACDPeriod+DefaultLongMACDPeriod+DefaultSignalEMAPeriod > len(initial) {
+		return nil
+	}
+
+	_, shortSMA := NewSMABig(initial[:DefaultShortMACDPeriod])
+	shortEMA := NewEMABig(DefaultShortMACDPeriod, shortSMA, nil)
+
+	var mostRecentShortEMA *big.Float
+	for _, p := range initial[DefaultShortMACDPeriod:DefaultLongMACDPeriod] {
+		mostRecentShortEMA = shortEMA.Calculate(p)
+	}
+
+	_, longSMA := NewSMABig(initial[:DefaultLongMACDPeriod])
+	longEMA := NewEMABig(DefaultLongMACDPeriod, longSMA, nil)
+
+	firstMACDResult := new(big.Float).Sub(mostRecentShortEMA, longSMA)
+
+	macd := NewMACDBig(longEMA, shortEMA)
+
+	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, initial[DefaultLongMACDPeriod:DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1], nil)
+
+	signal, _ := NewMACDSignalBig(macd, signalEMA, initial[DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1])
+
+	for i := DefaultLongMACDPeriod + DefaultSignalEMAPeriod; i < len(initial); i++ {
+		signal.Calculate(initial[i])
+	}
+
+	return signal
 }

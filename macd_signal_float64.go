@@ -13,12 +13,6 @@ type MACDSignalResultsFloat struct {
 	SignalEMA float64
 }
 
-type ImmediateMACDSignalOptionsFloat struct {
-	ShortPeriods  uint
-	LongPeriods   uint
-	SignalPeriods uint
-}
-
 // TODO Make the input a data structure.
 func NewMACDSignalFloat(macd MACDFloat, signalEMA *EMAFloat, next float64) (*MACDSignalFloat, MACDSignalResultsFloat) {
 	macdSignalFloat := &MACDSignalFloat{
