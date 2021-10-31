@@ -16,12 +16,12 @@ type EMABig struct {
 }
 
 // NewEMABig creates a new EMA data structure.
-func NewEMABig(periods uint, sma, smoothing *big.Float) (ema *EMABig) {
+func NewEMABig(periods uint, sma, smoothing *big.Float) *EMABig {
 	if smoothing == nil || smoothing.Cmp(big.NewFloat(0)) == 0 {
 		smoothing = big.NewFloat(DefaultEMASmoothing)
 	}
 
-	ema = &EMABig{
+	ema := &EMABig{
 		constant: new(big.Float).Quo(smoothing, new(big.Float).Add(bigOne, big.NewFloat(float64(periods)))),
 		prev:     sma,
 	}

@@ -17,7 +17,7 @@ type MACDResultsBig struct {
 }
 
 // NewMACDBig creates a new MACD data structure and returns the initial result.
-func NewMACDBig(long, short *EMABig) (macd MACDBig) {
+func NewMACDBig(long, short *EMABig) MACDBig {
 	return MACDBig{
 		Long:  long,
 		Short: short,
@@ -25,7 +25,7 @@ func NewMACDBig(long, short *EMABig) (macd MACDBig) {
 }
 
 // Calculate produces the next MACD result given the next input.
-func (macd MACDBig) Calculate(next *big.Float) (results MACDResultsBig) {
+func (macd MACDBig) Calculate(next *big.Float) MACDResultsBig {
 	short := macd.Short.Calculate(next)
 	long := macd.Long.Calculate(next)
 	return MACDResultsBig{

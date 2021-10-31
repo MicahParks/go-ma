@@ -46,7 +46,7 @@ func main() {
 
 	// Create the signal EMA.
 	signalEMA, signalResult, macdResults := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1], 0)
-	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1, nil, macdResults[len(macdResults)-1].Result, signalResult)
+	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-2, nil, macdResults[len(macdResults)-1].Result, signalResult)
 
 	// Create the signal from the MACD and signal EMA.
 	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1]) // TODO Wrong index, probably.

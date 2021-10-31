@@ -14,12 +14,12 @@ type EMAFloat struct {
 }
 
 // NewEMAFloat creates a new EMA data structure (EMA) algorithm.
-func NewEMAFloat(periods uint, sma, smoothing float64) (ema *EMAFloat) {
+func NewEMAFloat(periods uint, sma, smoothing float64) *EMAFloat {
 	if smoothing == 0 {
 		smoothing = DefaultEMASmoothing
 	}
 
-	ema = &EMAFloat{
+	ema := &EMAFloat{
 		constant: smoothing / (1 + float64(periods)),
 		prev:     sma,
 	}

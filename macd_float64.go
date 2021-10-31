@@ -25,7 +25,7 @@ type MACDResultsFloat struct {
 }
 
 // NewMACDFloat creates a new MACD data structure and returns the initial result.
-func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
+func NewMACDFloat(long, short *EMAFloat) MACDFloat {
 	return MACDFloat{
 		Long:  long,
 		Short: short,
@@ -33,7 +33,7 @@ func NewMACDFloat(long, short *EMAFloat) (macd MACDFloat) {
 }
 
 // Calculate produces the next MACD result given the next input.
-func (macd MACDFloat) Calculate(next float64) (results MACDResultsFloat) {
+func (macd MACDFloat) Calculate(next float64) MACDResultsFloat {
 	short := macd.Short.Calculate(next)
 	long := macd.Long.Calculate(next)
 	return MACDResultsFloat{

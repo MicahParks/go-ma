@@ -17,13 +17,13 @@ type MACDSignalResultsBig struct {
 	Signal    *big.Float
 }
 
-func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (macdFloatSignal *MACDSignalBig, results MACDSignalResultsBig) {
-	macdFloatSignal = &MACDSignalBig{
+func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (*MACDSignalBig, MACDSignalResultsBig) {
+	macdFloatSignal := &MACDSignalBig{
 		MACD:      macd,
 		SignalEMA: signalEMA,
 	}
 
-	results = MACDSignalResultsBig{
+	results := MACDSignalResultsBig{
 		MACD:   macd.Calculate(next),
 		Signal: signalEMA.Calculate(next),
 	}
@@ -34,8 +34,8 @@ func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (macdFlo
 }
 
 // Calculate TODO
-func (m *MACDSignalBig) Calculate(next *big.Float) (results MACDSignalResultsBig) {
-	results = MACDSignalResultsBig{
+func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
+	results := MACDSignalResultsBig{
 		MACD:   m.MACD.Calculate(next),
 		Signal: m.SignalEMA.Calculate(next),
 	}
