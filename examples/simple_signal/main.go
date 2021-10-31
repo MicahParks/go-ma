@@ -45,6 +45,8 @@ func main() {
 	macd := ma.NewMACDFloat(longEMA, shortEMA)
 
 	// Create the signal EMA.
+	//
+	// TODO Logger doesn't print boolean value.
 	signalEMA, signalResult, macdResults := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1], 0)
 	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-2, nil, macdResults[len(macdResults)-1].Result, signalResult)
 
@@ -55,9 +57,6 @@ func main() {
 	// Use the remaining data to generate the signal results for each period.
 	for i := ma.DefaultLongMACDPeriod + ma.DefaultSignalEMAPeriod; i < len(prices); i++ {
 		results = signal.Calculate(prices[i])
-		if results.BuySignal != nil {
-			println("boi")
-		}
 		logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", i, results.BuySignal, results.MACD.Result, results.SignalEMA)
 	}
 }
