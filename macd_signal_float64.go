@@ -1,5 +1,12 @@
 package ma
 
+const (
+
+	// RequiredSamplesForDefaultMACDSignal is the required number of period samples for an MACD signal using the default
+	// arguments.
+	RequiredSamplesForDefaultMACDSignal = DefaultShortMACDPeriod + DefaultLongMACDPeriod + DefaultSignalEMAPeriod
+)
+
 // TODO
 type MACDSignalFloat struct {
 	macd      MACDFloat
@@ -51,7 +58,7 @@ func (m *MACDSignalFloat) Calculate(next float64) MACDSignalResultsFloat {
 }
 
 func DefaultMACDSignalFloat(initial []float64) *MACDSignalFloat {
-	if DefaultShortMACDPeriod+DefaultLongMACDPeriod+DefaultSignalEMAPeriod > len(initial) {
+	if RequiredSamplesForDefaultMACDSignal > len(initial) {
 		return nil
 	}
 

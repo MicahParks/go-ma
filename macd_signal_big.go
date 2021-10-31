@@ -58,7 +58,7 @@ func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
 }
 
 func DefaultMACDSignalBig(initial []*big.Float) *MACDSignalBig {
-	if DefaultShortMACDPeriod+DefaultLongMACDPeriod+DefaultSignalEMAPeriod > len(initial) {
+	if RequiredSamplesForDefaultMACDSignal > len(initial) {
 		return nil
 	}
 
