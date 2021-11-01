@@ -63,3 +63,8 @@ BenchmarkSMAFloat_Calculate-6           1000000000               0.0000009 ns/op
 PASS
 ok      github.com/MicahParks/go-ma     0.014s
 ```
+
+# Resources
+I built and tested this package based on the resources here:
+* [Investopedia](https://www.investopedia.com/terms/m/macd.asp)
+* [Invest Excel](https://investexcel.net/how-to-calculate-macd-in-excel/)
