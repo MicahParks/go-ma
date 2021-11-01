@@ -168,3 +168,61 @@ func TestDefaultMACDSignalBig(t *testing.T) {
 		}
 	}
 }
+
+func TestDefaultMACDSignalFloatNil(t *testing.T) {
+	signal, _ := ma.DefaultMACDSignalFloat(nil)
+	if signal != nil {
+		t.FailNow()
+	}
+}
+
+func TestDefaultMACDSignalBigNil(t *testing.T) {
+	signal, _ := ma.DefaultMACDSignalBig(nil)
+	if signal != nil {
+		t.FailNow()
+	}
+}
+
+func TestDefaultMACDSignalCatchUpFloat(t *testing.T) {
+	const catchUp = 5
+
+	signal, firstResult := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
+
+	if firstResult.BuySignal != signalResults[0] {
+		if firstResult.BuySignal == nil || signalResults[0] == nil || *firstResult.BuySignal != *signalResults[0] {
+			t.FailNow()
+		}
+	}
+
+	for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal+catchUp:] {
+		actual := signal.Calculate(p).BuySignal
+		expected := signalResults[i+1+catchUp]
+		if actual != expected {
+			if actual == nil || expected == nil || *actual != *expected {
+				t.FailNow()
+			}
+		}
+	}
+}
+
+func TestDefaultMACDSignalCatchUpBig(t *testing.T) {
+	const catchUp = 5
+
+	signal, firstResult := ma.DefaultMACDSignalBig(bigPrices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
+
+	if firstResult.BuySignal != signalResults[0] {
+		if firstResult.BuySignal == nil || signalResults[0] == nil || *firstResult.BuySignal != *signalResults[0] {
+			t.FailNow()
+		}
+	}
+
+	for i, p := range bigPrices[ma.RequiredSamplesForDefaultMACDSignal+catchUp:] {
+		actual := signal.Calculate(p).BuySignal
+		expected := signalResults[i+1+catchUp]
+		if actual != expected {
+			if actual == nil || expected == nil || *actual != *expected {
+				t.FailNow()
+			}
+		}
+	}
+}
