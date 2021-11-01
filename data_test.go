@@ -188,7 +188,6 @@ var (
 		nil,
 		nil,
 		nil,
-		nil,
 		&[]bool{true}[0],
 		nil,
 		nil,

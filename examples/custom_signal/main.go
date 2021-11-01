@@ -7,6 +7,9 @@ import (
 	"github.com/MicahParks/go-ma"
 )
 
+// This example is functionally equivalent to the default signal, but it can be modified for customization.
+// These customizations can include period lengths and EMA smoothing constants.
+// Be careful to correctly index any slices during creations and read all function/method documentation.
 func main() {
 	// Create a logger.
 	logger := log.New(os.Stdout, "", 0)
@@ -45,19 +48,29 @@ func main() {
 	macd := ma.NewMACDFloat(longEMA, shortEMA)
 
 	// Create the signal EMA.
-	//
-	// TODO Logger doesn't print boolean value.
-	signalEMA, signalResult, macdResults := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1], 0)
-	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-2, nil, macdResults[len(macdResults)-1].Result, signalResult)
+	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.RequiredSamplesForDefaultMACDSignal-1], 0)
 
 	// Create the signal from the MACD and signal EMA.
-	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1])
-	logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", ma.DefaultLongMACDPeriod+ma.DefaultSignalEMAPeriod-1, results.BuySignal, results.MACD.Result, results.SignalEMA)
+	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.RequiredSamplesForDefaultMACDSignal-1])
+	buySignal := "Do nothing." // The first result's buy signal will never buy a buy/sell.
+	logger.Printf("Period index: %d\n  Buy Signal: %s\n  MACD: %.5f\n  Signal EMA: %.5f", ma.RequiredSamplesForDefaultMACDSignal-1, buySignal, results.MACD.Result, results.SignalEMA)
 
 	// Use the remaining data to generate the signal results for each period.
-	for i := ma.DefaultLongMACDPeriod + ma.DefaultSignalEMAPeriod; i < len(prices); i++ {
+	for i := ma.RequiredSamplesForDefaultMACDSignal; i < len(prices); i++ {
 		results = signal.Calculate(prices[i])
-		logger.Printf("Period index: %d\n  Buy Signal: %v\n  MACD: %.5f\n  Signal EMA: %.5f", i, results.BuySignal, results.MACD.Result, results.SignalEMA)
+
+		// Interpret the buy signal.
+		if results.BuySignal != nil {
+			if *results.BuySignal {
+				buySignal = "Buy, buy, buy!"
+			} else {
+				buySignal = "Sell, sell, sell!"
+			}
+		} else {
+			buySignal = "Do nothing."
+		}
+
+		logger.Printf("Period index: %d\n  Buy Signal: %s\n  MACD: %.5f\n  Signal EMA: %.5f", i, buySignal, results.MACD.Result, results.SignalEMA)
 	}
 }
 
