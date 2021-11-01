@@ -115,7 +115,6 @@ func TestMACDSignalFloat_Calculate(t *testing.T) {
 		t.FailNow()
 	}
 
-	// logger := log.New(os.Stdout, "", 0)
 	for i, p := range prices[ma.DefaultLongMACDPeriod+2:] {
 		actual := signal.Calculate(p).BuySignal
 		expected := signalResults[i+1]
