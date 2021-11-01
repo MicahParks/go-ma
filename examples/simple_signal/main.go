@@ -25,11 +25,11 @@ func main() {
 	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
 
 	// Save the last value of the short EMA for the first MACD calculation.
-	var mostRecentShortEMA float64
+	var latestShortEMA float64
 
 	// Catch up the short EMA to the period where the long EMA plus the signal EMA will be at.
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
-		mostRecentShortEMA = shortEMA.Calculate(p)
+		latestShortEMA = shortEMA.Calculate(p)
 	}
 
 	// Create the long EMA.
@@ -39,7 +39,7 @@ func main() {
 	// The first result returned from calculating the MACD will be the second possible MACD result. To get the first
 	// possible MACD result, use the most recent short and long EMA values. For the long EMA value, this will be
 	// equivalent to the most recent long SMA value.
-	firstMACDResult := mostRecentShortEMA - longSMA
+	firstMACDResult := latestShortEMA - longSMA
 
 	// Create the MACD from the short and long EMAs.
 	macd := ma.NewMACDFloat(longEMA, shortEMA)

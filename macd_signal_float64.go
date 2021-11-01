@@ -72,33 +72,33 @@ func (m *MACDSignalFloat) Calculate(next float64) MACDSignalResultsFloat {
 //
 // If the initial input slice does has too many data points, the MACD and signal EMA pair will be "caught" up to the
 // last data point given, but no results will be accessible.
-func DefaultMACDSignalFloat(initial []float64) *MACDSignalFloat {
+func DefaultMACDSignalFloat(initial []float64) (*MACDSignalFloat, MACDSignalResultsFloat) {
 	if RequiredSamplesForDefaultMACDSignal > len(initial) {
-		return nil
+		return nil, MACDSignalResultsFloat{}
 	}
 
 	_, shortSMA := NewSMAFloat(initial[:DefaultShortMACDPeriod])
 	shortEMA := NewEMAFloat(DefaultShortMACDPeriod, shortSMA, 0)
 
-	var mostRecentShortEMA float64
+	var latestShortEMA float64
 	for _, p := range initial[DefaultShortMACDPeriod:DefaultLongMACDPeriod] {
-		mostRecentShortEMA = shortEMA.Calculate(p)
+		latestShortEMA = shortEMA.Calculate(p)
 	}
 
 	_, longSMA := NewSMAFloat(initial[:DefaultLongMACDPeriod])
 	longEMA := NewEMAFloat(DefaultLongMACDPeriod, longSMA, 0)
 
-	firstMACDResult := mostRecentShortEMA - longSMA
+	firstMACDResult := latestShortEMA - longSMA
 
 	macd := NewMACDFloat(longEMA, shortEMA)
 
 	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, initial[DefaultLongMACDPeriod:DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1], 0)
 
-	signal, _ := NewMACDSignalFloat(macd, signalEMA, initial[DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1])
+	signal, firstResult := NewMACDSignalFloat(macd, signalEMA, initial[DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1])
 
 	for i := DefaultLongMACDPeriod + DefaultSignalEMAPeriod; i < len(initial); i++ {
 		signal.Calculate(initial[i])
 	}
 
-	return signal
+	return signal, firstResult
 }
