@@ -7,7 +7,7 @@ If there are any other moving average algorithms you'd like implemented, please 
 Example: Weighted Moving Average (WMA)
 
 # Usage
-Please see the `examples` directory for customizable examples.
+Please see the `examples` directory for full customizable examples.
 
 ## Create an MACD and signal EMA data structure
 This will produce points on the MACD and signal EMA lines, as well as buy/sell signals.
