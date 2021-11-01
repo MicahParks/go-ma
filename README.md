@@ -7,6 +7,42 @@ If there are any other moving average algorithms you'd like implemented, please 
 Example: Weighted Moving Average (WMA)
 
 # Usage
+Please see the `examples` directory for customizable examples.
+
+## Create an MACD and signal EMA data structure
+This will produce points on the MACD and signal EMA lines, as well as buy/sell signals.
+```go
+// Create a logger.
+logger := log.New(os.Stdout, "", 0)
+
+// Gather some data.
+//
+// For production systems, it'd be best to gather data asynchronously.
+prices := testData()
+
+// Create the MACD and signal EMA pair.
+signal := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal])
+
+// Iterate through the rest of the data and print the results.
+var results ma.MACDSignalResultsFloat
+for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal:] {
+	results = signal.Calculate(p)
+
+	// Interpret the buy signal.
+	var buySignal string
+	if results.BuySignal != nil {
+		if *results.BuySignal {
+			buySignal = "Buy, buy, buy!"
+		} else {
+			buySignal = "Sell, sell, sell!"
+		}
+	} else {
+		buySignal = "Do nothing."
+	}
+
+	logger.Printf("Price index: %d\n  MACD: %.5f\n  Signal EMA: %.5f\n  Buy signal: %s", i+ma.RequiredSamplesForDefaultMACDSignal, results.MACD.Result, results.SignalEMA, buySignal)
+}
+```
 
 # Testing
 There is 100% test coverage and benchmarks for this project. Here is an example benchmark result:
