@@ -6,14 +6,14 @@ const (
 	DefaultEMASmoothing = 2
 )
 
-// EMAFloat represents the state of an Exponential Moving Average.
+// EMAFloat represents the state of an Exponential Moving Average (EMA).
 type EMAFloat struct {
 	constant         float64
 	prev             float64
 	oneMinusConstant float64
 }
 
-// NewEMAFloat creates a new EMA data structure (EMA) algorithm.
+// NewEMAFloat creates a new EMA data structure.
 func NewEMAFloat(periods uint, sma, smoothing float64) *EMAFloat {
 	if smoothing == 0 {
 		smoothing = DefaultEMASmoothing
