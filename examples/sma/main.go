@@ -22,7 +22,7 @@ func main() {
 	// Create the SMA data structure and get the first result.
 	//
 	// The length of the initial slice is the number of periods used for calculating the SMA.
-	sma, result := ma.NewSMAFloat(prices[:periods])
+	sma, result := ma.NewSMA(prices[:periods])
 	logger.Printf("Period index: %d\nPrice: %.2f\nSMA: %.2f", periods-1, prices[periods-1], result)
 
 	// Use the remaining data to generate the SMA for each period.

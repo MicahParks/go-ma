@@ -11,7 +11,7 @@ const (
 )
 
 func BenchmarkSMABig_Calculate(b *testing.B) {
-	sma, _ := ma.NewSMABig(bigPrices[:testPeriod])
+	sma, _ := ma.NewBigSMA(bigPrices[:testPeriod])
 
 	for _, p := range bigPrices[testPeriod:] {
 		sma.Calculate(p)
@@ -19,7 +19,7 @@ func BenchmarkSMABig_Calculate(b *testing.B) {
 }
 
 func BenchmarkSMAFloat_Calculate(b *testing.B) {
-	sma, _ := ma.NewSMAFloat(prices[:testPeriod])
+	sma, _ := ma.NewSMA(prices[:testPeriod])
 
 	for i, p := range prices[testPeriod:] {
 		if smaResults[i] != sma.Calculate(p) {
@@ -29,15 +29,15 @@ func BenchmarkSMAFloat_Calculate(b *testing.B) {
 }
 
 func TestSMABig_Calculate(t *testing.T) {
-	sma, _ := ma.NewSMABig(bigPrices[:testPeriod])
+	sma, _ := ma.NewBigSMA(bigPrices[:testPeriod])
 
 	for _, p := range bigPrices[testPeriod:] {
 		sma.Calculate(p)
 	}
 }
 
-func TestSMAFloat_Calculate(t *testing.T) {
-	sma, _ := ma.NewSMAFloat(prices[:testPeriod])
+func TestSMA_Calculate(t *testing.T) {
+	sma, _ := ma.NewSMA(prices[:testPeriod])
 
 	for i, p := range prices[testPeriod:] {
 		if smaResults[i] != sma.Calculate(p) {

@@ -19,10 +19,10 @@ func main() {
 	// Get the first result of the short SMA. The first result of the SMA is the same as the first result of the EMA.
 	//
 	// The length of the initial slice is the number of periods used for calculating the SMA.
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
 
 	// Create the short EMA data structure.
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 
 	// Save the last value of the short EMA for the first MACD calculation.
 	//
@@ -35,8 +35,8 @@ func main() {
 	}
 
 	// Create the long EMA.
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
 	// The first result returned from calculating the MACD will be the second possible MACD result. To get the first
 	// possible MACD result, use the most recent short and long EMA values. For the long EMA value, this will be
@@ -47,10 +47,10 @@ func main() {
 	logger.Printf("Period index: %d\n  MACD: %.5f\n  Short: %.5f\n  Long: %.5f", ma.DefaultLongMACDPeriod-1, firstResult, latestShortEMA, longSMA)
 
 	// Create the MACD from the short and long EMAs.
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
 	// Use the remaining data to generate the MACD results for each period.
-	var results ma.MACDResultsFloat
+	var results ma.MACDResults
 	for i := ma.DefaultLongMACDPeriod; i < len(prices); i++ {
 		results = macd.Calculate(prices[i])
 		logger.Printf("Period index: %d\n  MACD: %.5f\n  Short: %.5f\n  Long: %.5f", i, results.Result, results.Short, results.Long)

@@ -21,10 +21,10 @@ logger := log.New(os.Stdout, "", 0)
 prices := testData()
 
 // Create the MACD and signal EMA pair.
-signal := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal])
+signal := ma.DefaultMACDSignal(prices[:ma.RequiredSamplesForDefaultMACDSignal])
 
 // Iterate through the rest of the data and print the results.
-var results ma.MACDSignalResultsFloat
+var results ma.MACDSignalResults
 for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal:] {
 	results = signal.Calculate(p)
 
@@ -53,13 +53,13 @@ goarch: amd64
 pkg: github.com/MicahParks/go-ma
 cpu: Intel(R) Core(TM) i5-9600K CPU @ 3.70GHz
 BenchmarkEMABig_Calculate-6             1000000000               0.0000272 ns/op
-BenchmarkEMAFloat_Calculate-6           1000000000               0.0000009 ns/op
+BenchmarkEMA_Calculate-6           1000000000               0.0000009 ns/op
 BenchmarkMACDSignalBig_Calculate-6      1000000000               0.0004847 ns/op
-BenchmarkMACDSignalFloat_Calculate-6    1000000000               0.0000064 ns/op
+BenchmarkMACDSignal_Calculate-6    1000000000               0.0000064 ns/op
 BenchmarkMACDBig_Calculate-6            1000000000               0.0000389 ns/op
-BenchmarkMACDFloat_Calculate-6          1000000000               0.0000019 ns/op
+BenchmarkMACD_Calculate-6          1000000000               0.0000019 ns/op
 BenchmarkSMABig_Calculate-6             1000000000               0.0000476 ns/op
-BenchmarkSMAFloat_Calculate-6           1000000000               0.0000009 ns/op
+BenchmarkSMA_Calculate-6           1000000000               0.0000009 ns/op
 PASS
 ok      github.com/MicahParks/go-ma     0.014s
 ```

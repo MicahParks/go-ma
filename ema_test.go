@@ -12,9 +12,9 @@ var (
 )
 
 func BenchmarkEMABig_Calculate(b *testing.B) {
-	_, sma := ma.NewSMABig(bigPrices[:testPeriod])
+	_, sma := ma.NewBigSMA(bigPrices[:testPeriod])
 
-	ema := ma.NewEMABig(testPeriod, sma, bigTestSmoothing)
+	ema := ma.NewBigEMA(testPeriod, sma, bigTestSmoothing)
 
 	for _, p := range bigPrices[testPeriod:] {
 		ema.Calculate(p)
@@ -22,9 +22,9 @@ func BenchmarkEMABig_Calculate(b *testing.B) {
 }
 
 func BenchmarkEMAFloat_Calculate(b *testing.B) {
-	_, sma := ma.NewSMAFloat(prices[:testPeriod])
+	_, sma := ma.NewSMA(prices[:testPeriod])
 
-	ema := ma.NewEMAFloat(testPeriod, sma, ma.DefaultEMASmoothing)
+	ema := ma.NewEMA(testPeriod, sma, ma.DefaultEMASmoothing)
 
 	for _, p := range prices[testPeriod:] {
 		ema.Calculate(p)

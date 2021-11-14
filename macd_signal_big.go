@@ -4,48 +4,48 @@ import (
 	"math/big"
 )
 
-// MACDSignalBig represents an MACD and signal EMA pair.
-type MACDSignalBig struct {
-	macd      MACDBig
-	signalEMA *EMABig
+// BigMACDSignal represents an MACD and signal EMA pair.
+type BigMACDSignal struct {
+	macd      BigMACD
+	signalEMA *BigEMA
 	prevBuy   bool
 }
 
-// MACDSignalResultsBig holds the results of an MACD and signal EMA pair's calculation.
+// BigMACDSignalResults holds the results of an MACD and signal EMA pair's calculation.
 //
 // If the calculation triggered a buy signal BuySignal will not be `nil`. It will be a pointer to `true`, if the signal
 // indicates a buy and a pointer to `false` if the signal indicates a sell.
-type MACDSignalResultsBig struct {
+type BigMACDSignalResults struct {
 	BuySignal *bool
-	MACD      MACDResultsBig
+	MACD      BigMACDResults
 	SignalEMA *big.Float
 }
 
-// NewMACDSignalBig creates a new MACD and signal EMA pair. It's calculations are done in tandem to produced buy/sell
+// NewBigMACDSignal creates a new MACD and signal EMA pair. It's calculations are done in tandem to produced buy/sell
 // signals.
-func NewMACDSignalBig(macd MACDBig, signalEMA *EMABig, next *big.Float) (*MACDSignalBig, MACDSignalResultsBig) {
-	macdFloatSignal := &MACDSignalBig{
+func NewBigMACDSignal(macd BigMACD, signalEMA *BigEMA, next *big.Float) (*BigMACDSignal, BigMACDSignalResults) {
+	macdSignal := &BigMACDSignal{
 		macd:      macd,
 		signalEMA: signalEMA,
 	}
 
 	macdResult := macd.Calculate(next)
-	results := MACDSignalResultsBig{
+	results := BigMACDSignalResults{
 		MACD:      macdResult,
 		SignalEMA: signalEMA.Calculate(macdResult.Result),
 	}
 
-	macdFloatSignal.prevBuy = results.MACD.Result.Cmp(results.SignalEMA) == 1
+	macdSignal.prevBuy = results.MACD.Result.Cmp(results.SignalEMA) == 1
 
-	return macdFloatSignal, results
+	return macdSignal, results
 }
 
 // Calculate computes the next MACD and signal EMA pair's results. It may also trigger a buy/sell signal.
-func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
+func (m *BigMACDSignal) Calculate(next *big.Float) BigMACDSignalResults {
 	macd := m.macd.Calculate(next)
 	signalEMA := m.signalEMA.Calculate(macd.Result)
 
-	results := MACDSignalResultsBig{
+	results := BigMACDSignalResults{
 		MACD:      macd,
 		SignalEMA: signalEMA,
 	}
@@ -63,7 +63,7 @@ func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
 	return results
 }
 
-// DefaultMACDSignalBig is a helper function to create an MACD and signal EMA pair from the default parameters given the
+// DefaultBigMACDSignal is a helper function to create an MACD and signal EMA pair from the default parameters given the
 // initial input data points.
 //
 // There must be at least 35 data points in the initial slice. This accounts for the number of data points required to
@@ -73,29 +73,29 @@ func (m *MACDSignalBig) Calculate(next *big.Float) MACDSignalResultsBig {
 //
 // If the initial input slice does has too many data points, the MACD and signal EMA pair will be "caught" up to the
 // last data point given, but no results will be accessible.
-func DefaultMACDSignalBig(initial []*big.Float) *MACDSignalBig {
+func DefaultBigMACDSignal(initial []*big.Float) *BigMACDSignal {
 	if RequiredSamplesForDefaultMACDSignal > len(initial) {
 		return nil
 	}
 
-	_, shortSMA := NewSMABig(initial[:DefaultShortMACDPeriod])
-	shortEMA := NewEMABig(DefaultShortMACDPeriod, shortSMA, nil)
+	_, shortSMA := NewBigSMA(initial[:DefaultShortMACDPeriod])
+	shortEMA := NewBigEMA(DefaultShortMACDPeriod, shortSMA, nil)
 
 	var latestShortEMA *big.Float
 	for _, p := range initial[DefaultShortMACDPeriod:DefaultLongMACDPeriod] {
 		latestShortEMA = shortEMA.Calculate(p)
 	}
 
-	_, longSMA := NewSMABig(initial[:DefaultLongMACDPeriod])
-	longEMA := NewEMABig(DefaultLongMACDPeriod, longSMA, nil)
+	_, longSMA := NewBigSMA(initial[:DefaultLongMACDPeriod])
+	longEMA := NewBigEMA(DefaultLongMACDPeriod, longSMA, nil)
 
 	firstMACDResult := new(big.Float).Sub(latestShortEMA, longSMA)
 
-	macd := NewMACDBig(longEMA, shortEMA)
+	macd := NewBigMACD(longEMA, shortEMA)
 
 	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, initial[DefaultLongMACDPeriod:DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1], nil)
 
-	signal, _ := NewMACDSignalBig(macd, signalEMA, initial[DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1])
+	signal, _ := NewBigMACDSignal(macd, signalEMA, initial[DefaultLongMACDPeriod+DefaultSignalEMAPeriod-1])
 
 	for i := DefaultLongMACDPeriod + DefaultSignalEMAPeriod; i < len(initial); i++ {
 		signal.Calculate(initial[i])

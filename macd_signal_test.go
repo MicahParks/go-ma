@@ -8,24 +8,24 @@ import (
 )
 
 func BenchmarkMACDSignalBig_Calculate(b *testing.B) {
-	_, shortSMA := ma.NewSMABig(bigPrices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMABig(ma.DefaultShortMACDPeriod, shortSMA, nil)
+	_, shortSMA := ma.NewBigSMA(bigPrices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewBigEMA(ma.DefaultShortMACDPeriod, shortSMA, nil)
 	for _, p := range bigPrices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, signalSMA := ma.NewSMABig(bigPrices[:ma.DefaultSignalEMAPeriod])
-	signalEMA := ma.NewEMABig(ma.DefaultSignalEMAPeriod, signalSMA, nil)
+	_, signalSMA := ma.NewBigSMA(bigPrices[:ma.DefaultSignalEMAPeriod])
+	signalEMA := ma.NewBigEMA(ma.DefaultSignalEMAPeriod, signalSMA, nil)
 	for _, p := range bigPrices[ma.DefaultSignalEMAPeriod:ma.DefaultLongMACDPeriod] {
 		signalEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMABig(bigPrices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMABig(ma.DefaultLongMACDPeriod, longSMA, nil)
+	_, longSMA := ma.NewBigSMA(bigPrices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewBigEMA(ma.DefaultLongMACDPeriod, longSMA, nil)
 
-	macd := ma.NewMACDBig(longEMA, shortEMA)
+	macd := ma.NewBigMACD(longEMA, shortEMA)
 
-	signal, _ := ma.NewMACDSignalBig(macd, signalEMA, bigPrices[ma.DefaultLongMACDPeriod+1])
+	signal, _ := ma.NewBigMACDSignal(macd, signalEMA, bigPrices[ma.DefaultLongMACDPeriod+1])
 
 	for _, p := range bigPrices[ma.DefaultLongMACDPeriod+2:] {
 		signal.Calculate(p)
@@ -33,24 +33,24 @@ func BenchmarkMACDSignalBig_Calculate(b *testing.B) {
 }
 
 func BenchmarkMACDSignalFloat_Calculate(b *testing.B) {
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, signalSMA := ma.NewSMAFloat(prices[:ma.DefaultSignalEMAPeriod])
-	signalEMA := ma.NewEMAFloat(ma.DefaultSignalEMAPeriod, signalSMA, 0)
+	_, signalSMA := ma.NewSMA(prices[:ma.DefaultSignalEMAPeriod])
+	signalEMA := ma.NewEMA(ma.DefaultSignalEMAPeriod, signalSMA, 0)
 	for _, p := range prices[ma.DefaultSignalEMAPeriod:ma.DefaultLongMACDPeriod] {
 		signalEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
-	signal, _ := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+1])
+	signal, _ := ma.NewMACDSignal(macd, signalEMA, prices[ma.DefaultLongMACDPeriod+1])
 
 	for _, p := range prices[ma.DefaultLongMACDPeriod+2:] {
 		signal.Calculate(p)
@@ -59,22 +59,22 @@ func BenchmarkMACDSignalFloat_Calculate(b *testing.B) {
 
 func TestMACDSignalBig_Calculate(t *testing.T) {
 	var latestShortEMA *big.Float
-	_, shortSMA := ma.NewSMABig(bigPrices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMABig(ma.DefaultShortMACDPeriod, shortSMA, nil)
+	_, shortSMA := ma.NewBigSMA(bigPrices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewBigEMA(ma.DefaultShortMACDPeriod, shortSMA, nil)
 	for _, p := range bigPrices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		latestShortEMA = shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMABig(bigPrices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMABig(ma.DefaultLongMACDPeriod, longSMA, nil)
+	_, longSMA := ma.NewBigSMA(bigPrices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewBigEMA(ma.DefaultLongMACDPeriod, longSMA, nil)
 
 	firstMACDResult := new(big.Float).Sub(latestShortEMA, longSMA)
 
-	macd := ma.NewMACDBig(longEMA, shortEMA)
+	macd := ma.NewBigMACD(longEMA, shortEMA)
 
 	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, bigPrices[ma.DefaultLongMACDPeriod:ma.RequiredSamplesForDefaultMACDSignal-1], nil)
 
-	signal, _ := ma.NewMACDSignalBig(macd, signalEMA, bigPrices[ma.RequiredSamplesForDefaultMACDSignal-1])
+	signal, _ := ma.NewBigMACDSignal(macd, signalEMA, bigPrices[ma.RequiredSamplesForDefaultMACDSignal-1])
 
 	for i, p := range bigPrices[ma.RequiredSamplesForDefaultMACDSignal:] {
 		actual := signal.Calculate(p).BuySignal
@@ -87,24 +87,24 @@ func TestMACDSignalBig_Calculate(t *testing.T) {
 	}
 }
 
-func TestMACDSignalFloat_Calculate(t *testing.T) {
+func TestMACDSignal_Calculate(t *testing.T) {
 	var latestShortEMA float64
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		latestShortEMA = shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
 	firstMACDResult := latestShortEMA - longSMA
 
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
 	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.RequiredSamplesForDefaultMACDSignal-1], 0)
 
-	signal, _ := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.RequiredSamplesForDefaultMACDSignal-1])
+	signal, _ := ma.NewMACDSignal(macd, signalEMA, prices[ma.RequiredSamplesForDefaultMACDSignal-1])
 
 	for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal:] {
 		actual := signal.Calculate(p).BuySignal
@@ -117,8 +117,8 @@ func TestMACDSignalFloat_Calculate(t *testing.T) {
 	}
 }
 
-func TestDefaultMACDSignalFloat(t *testing.T) {
-	signal := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal])
+func TestDefaultMACDSignal(t *testing.T) {
+	signal := ma.DefaultMACDSignal(prices[:ma.RequiredSamplesForDefaultMACDSignal])
 
 	for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal:] {
 		actual := signal.Calculate(p).BuySignal
@@ -132,7 +132,7 @@ func TestDefaultMACDSignalFloat(t *testing.T) {
 }
 
 func TestDefaultMACDSignalBig(t *testing.T) {
-	signal := ma.DefaultMACDSignalBig(bigPrices[:ma.RequiredSamplesForDefaultMACDSignal])
+	signal := ma.DefaultBigMACDSignal(bigPrices[:ma.RequiredSamplesForDefaultMACDSignal])
 
 	for i, p := range bigPrices[ma.RequiredSamplesForDefaultMACDSignal:] {
 		actual := signal.Calculate(p).BuySignal
@@ -145,24 +145,24 @@ func TestDefaultMACDSignalBig(t *testing.T) {
 	}
 }
 
-func TestDefaultMACDSignalFloatNil(t *testing.T) {
-	signal := ma.DefaultMACDSignalFloat(nil)
+func TestDefaultMACDSignalNil(t *testing.T) {
+	signal := ma.DefaultMACDSignal(nil)
 	if signal != nil {
 		t.FailNow()
 	}
 }
 
 func TestDefaultMACDSignalBigNil(t *testing.T) {
-	signal := ma.DefaultMACDSignalBig(nil)
+	signal := ma.DefaultBigMACDSignal(nil)
 	if signal != nil {
 		t.FailNow()
 	}
 }
 
-func TestDefaultMACDSignalCatchUpFloat(t *testing.T) {
+func TestDefaultMACDSignalCatchUp(t *testing.T) {
 	const catchUp = 5
 
-	signal := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
+	signal := ma.DefaultMACDSignal(prices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
 
 	for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal+catchUp:] {
 		actual := signal.Calculate(p).BuySignal
@@ -178,7 +178,7 @@ func TestDefaultMACDSignalCatchUpFloat(t *testing.T) {
 func TestDefaultMACDSignalCatchUpBig(t *testing.T) {
 	const catchUp = 5
 
-	signal := ma.DefaultMACDSignalBig(bigPrices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
+	signal := ma.DefaultBigMACDSignal(bigPrices[:ma.RequiredSamplesForDefaultMACDSignal+catchUp])
 
 	for i, p := range bigPrices[ma.RequiredSamplesForDefaultMACDSignal+catchUp:] {
 		actual := signal.Calculate(p).BuySignal

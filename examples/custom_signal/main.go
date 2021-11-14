@@ -22,10 +22,10 @@ func main() {
 	// Get the first result of the short SMA. The first result of the SMA is the same as the first result of the EMA.
 	//
 	// The length of the initial slice is the number of periods used for calculating the SMA.
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
 
 	// Create the short EMA data structure.
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 
 	// Save the last value of the short EMA for the first MACD calculation.
 	var latestShortEMA float64
@@ -36,8 +36,8 @@ func main() {
 	}
 
 	// Create the long EMA.
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
 	// The first result returned from calculating the MACD will be the second possible MACD result. To get the first
 	// possible MACD result, use the most recent short and long EMA values. For the long EMA value, this will be
@@ -45,13 +45,13 @@ func main() {
 	firstMACDResult := latestShortEMA - longSMA
 
 	// Create the MACD from the short and long EMAs.
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
 	// Create the signal EMA.
 	signalEMA, _, _ := macd.SignalEMA(firstMACDResult, prices[ma.DefaultLongMACDPeriod:ma.RequiredSamplesForDefaultMACDSignal-1], 0)
 
 	// Create the signal from the MACD and signal EMA.
-	signal, results := ma.NewMACDSignalFloat(macd, signalEMA, prices[ma.RequiredSamplesForDefaultMACDSignal-1])
+	signal, results := ma.NewMACDSignal(macd, signalEMA, prices[ma.RequiredSamplesForDefaultMACDSignal-1])
 	buySignal := "Do nothing." // The first result's buy signal will never buy a buy/sell.
 	logger.Printf("Period index: %d\n  Buy Signal: %s\n  MACD: %.5f\n  Signal EMA: %.5f", ma.RequiredSamplesForDefaultMACDSignal-1, buySignal, results.MACD.Result, results.SignalEMA)
 

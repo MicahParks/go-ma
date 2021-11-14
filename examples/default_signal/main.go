@@ -17,10 +17,10 @@ func main() {
 	prices := testData()
 
 	// Create the MACD and signal EMA pair.
-	signal := ma.DefaultMACDSignalFloat(prices[:ma.RequiredSamplesForDefaultMACDSignal])
+	signal := ma.DefaultMACDSignal(prices[:ma.RequiredSamplesForDefaultMACDSignal])
 
 	// Iterate through the rest of the data and print the results.
-	var results ma.MACDSignalResultsFloat
+	var results ma.MACDSignalResults
 	for i, p := range prices[ma.RequiredSamplesForDefaultMACDSignal:] {
 		results = signal.Calculate(p)
 

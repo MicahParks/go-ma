@@ -4,32 +4,32 @@ import (
 	"math/big"
 )
 
-// MACDBig represents the state of a Moving Average Convergence Divergence (MACD) algorithm.
-type MACDBig struct {
-	Long  *EMABig
-	Short *EMABig
+// BigMACD represents the state of a Moving Average Convergence Divergence (MACD) algorithm.
+type BigMACD struct {
+	Long  *BigEMA
+	Short *BigEMA
 }
 
-// MACDResultsBig holds the results fo an MACD calculation.
-type MACDResultsBig struct {
+// BigMACDResults holds the results fo an MACD calculation.
+type BigMACDResults struct {
 	Long   *big.Float
 	Result *big.Float
 	Short  *big.Float
 }
 
-// NewMACDBig creates a new MACD data structure and returns the initial result.
-func NewMACDBig(long, short *EMABig) MACDBig {
-	return MACDBig{
+// NewBigMACD creates a new MACD data structure and returns the initial result.
+func NewBigMACD(long, short *BigEMA) BigMACD {
+	return BigMACD{
 		Long:  long,
 		Short: short,
 	}
 }
 
 // Calculate produces the next MACD result given the next input.
-func (macd MACDBig) Calculate(next *big.Float) MACDResultsBig {
+func (macd BigMACD) Calculate(next *big.Float) BigMACDResults {
 	short := macd.Short.Calculate(next)
 	long := macd.Long.Calculate(next)
-	return MACDResultsBig{
+	return BigMACDResults{
 		Long:   long,
 		Result: new(big.Float).Sub(short, long),
 		Short:  short,
@@ -40,9 +40,9 @@ func (macd MACDBig) Calculate(next *big.Float) MACDResultsBig {
 //
 // The first MACD result *must* be saved in order to create the signal EMA. Then, the next period samples required for
 // the creation of the signal EMA must be given. The period length of the EMA is `1 + len(next)`.
-func (macd MACDBig) SignalEMA(firstMACDResult *big.Float, next []*big.Float, smoothing *big.Float) (signalEMA *EMABig, signalResult *big.Float, macdResults []MACDResultsBig) {
+func (macd BigMACD) SignalEMA(firstMACDResult *big.Float, next []*big.Float, smoothing *big.Float) (signalEMA *BigEMA, signalResult *big.Float, macdResults []BigMACDResults) {
 	macdBigs := make([]*big.Float, len(next))
-	macdResults = make([]MACDResultsBig, len(next))
+	macdResults = make([]BigMACDResults, len(next))
 
 	for i, p := range next {
 		result := macd.Calculate(p)
@@ -50,7 +50,7 @@ func (macd MACDBig) SignalEMA(firstMACDResult *big.Float, next []*big.Float, smo
 		macdResults[i] = result
 	}
 
-	_, sma := NewSMABig(append([]*big.Float{firstMACDResult}, macdBigs...))
+	_, sma := NewBigSMA(append([]*big.Float{firstMACDResult}, macdBigs...))
 
-	return NewEMABig(uint(len(next)+1), sma, smoothing), sma, macdResults
+	return NewBigEMA(uint(len(next)+1), sma, smoothing), sma, macdResults
 }

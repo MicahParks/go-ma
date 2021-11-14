@@ -12,9 +12,9 @@ type SMABig struct {
 	periods  *big.Float
 }
 
-// NewSMABig creates a new SMA data structure and the initial result. The period used will be the length of the initial
+// NewBigSMA creates a new SMA data structure and the initial result. The period used will be the length of the initial
 // input slice.
-func NewSMABig(initial []*big.Float) (sma *SMABig, result *big.Float) {
+func NewBigSMA(initial []*big.Float) (sma *SMABig, result *big.Float) {
 	sma = &SMABig{
 		cacheLen: uint(len(initial)),
 	}

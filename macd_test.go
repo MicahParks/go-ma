@@ -7,16 +7,16 @@ import (
 )
 
 func BenchmarkMACDBig_Calculate(b *testing.B) {
-	_, shortSMA := ma.NewSMABig(bigPrices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMABig(ma.DefaultShortMACDPeriod, shortSMA, nil)
+	_, shortSMA := ma.NewBigSMA(bigPrices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewBigEMA(ma.DefaultShortMACDPeriod, shortSMA, nil)
 	for _, p := range bigPrices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMABig(bigPrices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMABig(ma.DefaultLongMACDPeriod, longSMA, nil)
+	_, longSMA := ma.NewBigSMA(bigPrices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewBigEMA(ma.DefaultLongMACDPeriod, longSMA, nil)
 
-	macd := ma.NewMACDBig(longEMA, shortEMA)
+	macd := ma.NewBigMACD(longEMA, shortEMA)
 
 	for _, p := range bigPrices[ma.DefaultLongMACDPeriod:] {
 		macd.Calculate(p)
@@ -24,16 +24,16 @@ func BenchmarkMACDBig_Calculate(b *testing.B) {
 }
 
 func BenchmarkMACDFloat_Calculate(b *testing.B) {
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
 	for _, p := range prices[ma.DefaultLongMACDPeriod:] {
 		macd.Calculate(p)
@@ -41,16 +41,16 @@ func BenchmarkMACDFloat_Calculate(b *testing.B) {
 }
 
 func TestMACDBig_Calculate(t *testing.T) {
-	_, shortSMA := ma.NewSMABig(bigPrices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMABig(ma.DefaultShortMACDPeriod, shortSMA, nil)
+	_, shortSMA := ma.NewBigSMA(bigPrices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewBigEMA(ma.DefaultShortMACDPeriod, shortSMA, nil)
 	for _, p := range bigPrices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMABig(bigPrices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMABig(ma.DefaultLongMACDPeriod, longSMA, nil)
+	_, longSMA := ma.NewBigSMA(bigPrices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewBigEMA(ma.DefaultLongMACDPeriod, longSMA, nil)
 
-	macd := ma.NewMACDBig(longEMA, shortEMA)
+	macd := ma.NewBigMACD(longEMA, shortEMA)
 
 	var res float64
 	for i, p := range bigPrices[ma.DefaultLongMACDPeriod:] {
@@ -61,17 +61,17 @@ func TestMACDBig_Calculate(t *testing.T) {
 	}
 }
 
-func TestMACDFloat_Calculate(t *testing.T) {
-	_, shortSMA := ma.NewSMAFloat(prices[:ma.DefaultShortMACDPeriod])
-	shortEMA := ma.NewEMAFloat(ma.DefaultShortMACDPeriod, shortSMA, 0)
+func TestMACD_Calculate(t *testing.T) {
+	_, shortSMA := ma.NewSMA(prices[:ma.DefaultShortMACDPeriod])
+	shortEMA := ma.NewEMA(ma.DefaultShortMACDPeriod, shortSMA, 0)
 	for _, p := range prices[ma.DefaultShortMACDPeriod:ma.DefaultLongMACDPeriod] {
 		shortEMA.Calculate(p)
 	}
 
-	_, longSMA := ma.NewSMAFloat(prices[:ma.DefaultLongMACDPeriod])
-	longEMA := ma.NewEMAFloat(ma.DefaultLongMACDPeriod, longSMA, 0)
+	_, longSMA := ma.NewSMA(prices[:ma.DefaultLongMACDPeriod])
+	longEMA := ma.NewEMA(ma.DefaultLongMACDPeriod, longSMA, 0)
 
-	macd := ma.NewMACDFloat(longEMA, shortEMA)
+	macd := ma.NewMACD(longEMA, shortEMA)
 
 	for i, p := range prices[ma.DefaultLongMACDPeriod:] {
 		if macd.Calculate(p).Result != results[i] {
