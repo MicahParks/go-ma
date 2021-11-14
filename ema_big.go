@@ -30,7 +30,7 @@ func NewEMABig(periods uint, sma, smoothing *big.Float) *EMABig {
 	return ema
 }
 
-// Calculate producers the next EMA result given the next input.
+// Calculate produces the next EMA result given the next input.
 func (ema *EMABig) Calculate(next *big.Float) (result *big.Float) {
 	ema.prev = new(big.Float).Add(new(big.Float).Mul(next, ema.constant), new(big.Float).Mul(ema.prev, ema.oneMinusConstant))
 

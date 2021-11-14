@@ -28,7 +28,7 @@ func NewEMAFloat(periods uint, sma, smoothing float64) *EMAFloat {
 	return ema
 }
 
-// Calculate producers the next EMA result given the next input.
+// Calculate produces the next EMA result given the next input.
 func (ema *EMAFloat) Calculate(next float64) (result float64) {
 	ema.prev = next*ema.constant + ema.prev*ema.oneMinusConstant
 
