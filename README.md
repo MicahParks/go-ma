@@ -6,6 +6,10 @@ analysis algorithms implemented in Golang.
 If there are any other moving average algorithms you'd like implemented, please feel free to open an issue or a PR.
 Example: Weighted Moving Average (WMA)
 
+```
+import "github.com/MicahParks/go-ma"
+```
+
 # Usage
 Please see the `examples` directory for full customizable examples.
 
