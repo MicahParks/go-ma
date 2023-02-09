@@ -68,6 +68,14 @@ PASS
 ok      github.com/MicahParks/go-ma     0.014s
 ```
 
+# Other Technical Algorithms
+Looking for some other technical analysis algorithms? Here are some other ones I've implemented:
+* Accumulation/Distribution (A/D): [go-ad](https://github.com/MicahParks/go-ad)
+* Chaikin: [go-chaikin](https://github.com/MicahParks/go-chaikin)
+* Moving Average Convergence Divergence (MACD), Exponential Moving Average (EMA), Simple Moving Average (SMA):
+[go-ma](https://github.com/MicahParks/go-ma)
+* Relative Strength Index (RSI): [go-rsi](https://github.com/MicahParks/go-rsi)
+
 # Resources
 I built and tested this package based on the resources here:
 * [Investopedia](https://www.investopedia.com/terms/m/macd.asp)
